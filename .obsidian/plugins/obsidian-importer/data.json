@@ -1,0 +1,23 @@
+{
+  "secrets": {},
+  "outputLocations": {},
+  "outputSettings": {
+    "onenote-file": {
+      "folder": "OneNote",
+      "attachments": {
+        "mode": "folder",
+        "path": "/images"
+      },
+      "duplicates": "update",
+      "saveSourceId": true,
+      "idProperty": "onenote-id",
+      "template": "",
+      "titleTemplate": "{{title}}"
+    }
+  },
+  "onenoteAttachments": {},
+  "sourceFolders": {
+    "onenote-file": "C:\\Users\\z02901\\Desktop"
+  },
+  "lastSourceFolder": "C:\\Users\\z02901\\Desktop"
+}
