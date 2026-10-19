@@ -1,0 +1,1 @@
+Trajectories are also frequently called **episodes** or **rollouts**.
