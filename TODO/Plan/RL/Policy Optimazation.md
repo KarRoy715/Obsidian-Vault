@@ -46,4 +46,66 @@ $$
 - 随机策略：$\pi(a|s)=P[A_t=a|S_t=s]$
 ### 1.2.5 轨迹的随机性
 
+### 1.2.6 ε-Greedy策略
+$\epsilon$-Greedy策略
 
+$$
+a_t = 
+\begin{cases} 
+\text{最优动作} & \text{以概率 } 1 - \epsilon \text{ （利用）} \\ 
+\text{随机动作} & \text{以概率 } \epsilon \text{ （探索）} 
+\end{cases}
+$$
+
+逐步衰减$\epsilon$ 的 $\epsilon$-Greedy 策略：训练初期，设置大的 $\epsilon$，随着训练进行，逐渐减小 $\epsilon$。
+训练时$\epsilon$-Greedy策略，部署时常采用贪婪策略
+
+---
+## 1.3 价值函数
+累积折扣回报：
+$$
+G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
+$$价值函数计算的是对回报的期望。
+
+**状态价值函数**
+状态价值函数(State-Value Function), 用符号 \(V\) 表示，从状态 \(s\) 出发，一直按照策略 $\pi$来行动，可以获得的期望回报。
+
+$$
+V_\pi(s) = E_\pi[G_t|S_t = s]
+$$
+**最优状态价值函数**
+
+$$
+\begin{array}{ll}
+\text{最优状态价值函数：} & V_*(s) = \max\limits_{\pi} V_\pi(s)
+\end{array}
+$$
+
+最优策略保证可以获得最大的期望回报。但不保证具体某一轨迹可以拿到比其他策略更大的回报。
+
+最优状态价值函数可以帮助我们找到最优策略。
+
+**动作价值函数**
+动作价值函数 (Action-Value Function), 用符号 $Q$ 表示，从状态 $s$ 出发，并做出动作 $a$，然后按照策略 $\pi$ 来行动，可以获得的期望回报。
+
+$$
+Q_\pi(s, a) = E_\pi[G_t \mid S_t = s, A_t = a]
+$$
+
+1. 状态 $s$ 下，对动作 $a$ 的评估。
+2. 在状态 $s$ 下强制执行 $a$，和策略 $\pi$ 无关。
+3. 动作价值和策略密切相关。
+
+**最优动作价值函数**
+用符号 $Q_*$ 表示，在状态 $s$ 下，并做出动作 $a$，然后由最优策略接管，可以获得的期望回报。
+
+$$
+\begin{aligned}
+\text{动作价值函数：} \quad & Q_\pi(s, a) = E_\pi[G_t \mid S_t = s, A_t = a] \\
+\text{最优动作价值函数：} \quad & Q_*(s, a) = \max_{\pi} Q_\pi(s, a)
+\end{aligned}
+$$
+有了 $Q_*$ 对所有动作的评分，就可以选择最优动作，做出最优决策了。
+
+---
+## 1.4 贝尔曼方程
