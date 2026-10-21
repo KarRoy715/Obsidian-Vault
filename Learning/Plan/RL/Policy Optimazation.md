@@ -291,4 +291,6 @@ $$
 Q_*(s, a) = r(s, a) + \gamma \sum_{s'} \left[ p(s'|s, a) \max_{a'} Q_*(s', a') \right]
 $$
 ---
+
 ## 2.1 动态规划
+
