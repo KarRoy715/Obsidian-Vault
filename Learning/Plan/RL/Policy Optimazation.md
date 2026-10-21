@@ -161,5 +161,7 @@ $$
 $$
 V_\pi(s) = \sum_a \left\{ \pi(a|s) \left[ r(s,a) + \sum_{s'} [p(s'|s,a)\gamma V_\pi(s')] \right] \right\}
 $$
+总结：当前状态价值=即时奖励的期望+下一状态价值的期望
+
 ---
 ## 2.1 动态规划
