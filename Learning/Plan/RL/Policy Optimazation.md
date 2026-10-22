@@ -462,7 +462,7 @@ $$
 像蒙特卡洛法一样不需要知道环境模型。
 像动态规划一样每走一步就更新一次。
 
-**SARSA**
+	**SARSA**
 $(S_t, A_t, R_t, S_{t+1}, A_{t+1})$ : SARSA
 $$
 Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha\underbrace{[\underbrace{r_{t+1} + \gamma Q(s_{t+1}, a_{t+1})}_{\text{TD Target}} - Q(s_t, a_t)]}_{\text{TD Error}}
@@ -486,3 +486,17 @@ $$
 在$s_0$状态下，通过动作$a_0$，获得奖励$r_1$，更新到状态$s_1$
 上面图中的 $a_1$,$a_2$就是未知的，其他的都是已知的，未知的参数就是通过 $\epsilon - Greedy$ 策略生成的
 
+**Q-Learning**
+$$
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \underbrace{\left[ \underbrace{r_{t+1} + \gamma \max_a Q(s_{t+1}, a)}_{\text{TD Target}} - Q(s_t, a_t) \right]}_{\text{TD Error}}
+$$
+
+> 与环境交互的策略是 $\epsilon - Greedy$ 策略
+> Q表里的动作价值绑定的是贪婪策略
+
+与环境交互策略和评估改进的策略**不是**同一个的强化学习算法叫作异策略（Off-policy）算法。
+
+Q-Learning是Off-policy算法
+![[Pasted image 20261022143325.png]]
+
+## 2.3 动手实现悬崖漫步
