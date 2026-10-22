@@ -461,3 +461,19 @@ $$
 时序差分结合了动态规划和蒙特卡洛的优点：
 像蒙特卡洛法一样不需要知道环境模型。
 像动态规划一样每走一步就更新一次。
+
+**SARSA**
+$(S_t, A_t, R_t, S_{t+1}, A_{t+1})$ : SARSA
+$$
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha\underbrace{[\underbrace{r_{t+1} + \gamma Q(s_{t+1}, a_{t+1})}_{\text{TD Target}} - Q(s_t, a_t)]}_{\text{TD Error}}
+$$
+$\epsilon - Greedy$ 策略：
+$$
+\begin{cases}
+\text{最优动作} & \text{以概率 } 1-\epsilon \text{ （利用）} \\
+\text{随机动作} & \text{以概率 } \epsilon \text{ （探索）}
+\end{cases}
+$$
+每个动作价值，都反映了在 $\epsilon - Greedy$ 策略下的真实动作价值。
+采样策略和评估改进的策略是同一个的强化学习算法叫作同策略（On-policy）算法。
+SARSA是On-policy算法
