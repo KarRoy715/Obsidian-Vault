@@ -476,4 +476,12 @@ $$
 $$
 每个动作价值，都反映了在 $\epsilon - Greedy$ 策略下的真实动作价值。
 采样策略和评估改进的策略是同一个的强化学习算法叫作同策略（On-policy）算法。
-SARSA是On-policy算法
+
+> 与环境交互的策略是 $\epsilon - Greedy$ 策略
+> Q表里的动作价值绑定的是 $\epsilon - Greedy$ 策略
+
+**SARSA是On-policy算法**
+
+![[Pasted image 20261022140604.png]]
+在$s_0$状态下，通过动作$a_0$，获得奖励$r_1$，更新到状态$s_1$
+上面图中的 $a_1$,$a_2$就是未知的，其他的都是已知的，未知的参数就是通过 $\epsilon - Greedy$ 策略生成的
