@@ -315,4 +315,83 @@ $$
 		![[Pasted image 20261021202657.png]]
 2. **策略改进**：根据状态价值，找出每个状态下的最优动作，用最优动作改进策略。
 		![[Pasted image 20261021203533.png]]
-		![[Pasted image 20261021204326.png]]
+		![[Pasted image 20261021204326.png]]![[Pasted image 20261022091755.png]]![[Pasted image 20261022091902.png]]
+**代码实现：**
+```python
+# 定义状态和动作的映射，方便阅读
+STATES = ['s左', 's平', 's右']
+ACTIONS = ['a左', 'a平', 'a右']
+NUM_STATES = len(STATES)
+NUM_ACTIONS = len(ACTIONS)
+# 初始化状态转移概率矩阵 P[state][action][next_state]
+P = np.zeros((NUM_STATES, NUM_ACTIONS, NUM_STATES))
+# === 填充状态转移概率 ===
+# 在 s左 (0)
+P[0, 0] = [1.0, 0.0, 0.0]  # 做 a左
+P[0, 1] = [1.0, 0.0, 0.0]  # 做 a平
+P[0, 2] = [0.1, 0.4, 0.5]  # 做 a右
+# 在 s平 (1)
+P[1, 0] = [1.0, 0.0, 0.0]  # 做 a左
+P[1, 1] = [0.1, 0.8, 0.1]  # 做 a平
+P[1, 2] = [0.0, 0.0, 1.0]  # 做 a右
+# 在 s右 (2)
+P[2, 0] = [0.5, 0.4, 0.1]  # 做 a左
+P[2, 1] = [0.0, 0.0, 1.0]  # 做 a平
+P[2, 2] = [0.0, 0.0, 1.0]  # 做 a右
+# === 填充奖励矩阵 R[state][action] ===
+R = np.zeros((NUM_STATES, NUM_ACTIONS))
+R[0, 2] = 1.0  # 在 s左, 做 a右
+R[1, 1] = 2.0  # 在 s平, 做 a平
+R[2, 0] = 1.0  # 在 s右, 做 a左
+```
+
+```python
+# === 价值迭代算法 ===
+gamma = 0.8  # 折扣因子 (Discount factor)
+theta = 1e-5 # 收敛阈值 (Threshold for convergence)
+V = np.zeros(NUM_STATES)  # 初始化所有状态的价值为 0
+iteration = 0
+while True:
+    delta = 0
+    V_new = np.zeros(NUM_STATES)
+    for s in range(NUM_STATES):
+        # 计算当前状态下，采取每种动作的 Q 值: Q(s,a) = R(s,a) + gamma * sum(P(s'|s,a) * V(s'))
+        Q_values = np.zeros(NUM_ACTIONS)
+        for a in range(NUM_ACTIONS):
+            expected_value = sum(P[s, a, s_prime] * V[s_prime] for s_prime in range(NUM_STATES))
+            Q_values[a] = R[s, a] + gamma * expected_value
+            
+        # 价值迭代的核心：取最大的 Q 值作为当前状态的新价值
+        V_new[s] = np.max(Q_values)
+        
+        # 计算最大变化量，用于判断是否收敛
+        delta = max(delta, abs(V[s] - V_new[s]))
+        
+    V = V_new
+    iteration += 1
+    if delta < theta:
+        break
+print(f"价值迭代在 {iteration} 次后收敛。\n")
+```
+
+```python
+# === 提取最优策略 (Policy Extraction) ===
+optimal_policy = np.zeros(NUM_STATES, dtype=int)
+
+for s in range(NUM_STATES):
+    Q_values = np.zeros(NUM_ACTIONS)
+    for a in range(NUM_ACTIONS):
+        expected_value = sum(P[s, a, s_prime] * V[s_prime] for s_prime in range(NUM_STATES))
+        Q_values[a] = R[s, a] + gamma * expected_value
+    # 找到使 Q 值最大的动作
+    optimal_policy[s] = np.argmax(Q_values)
+
+# === 打印最终结果 ===
+print("=== 最终状态价值 (State Values) ===")
+for s in range(NUM_STATES):
+    print(f"状态 {STATES[s]}: {V[s]:.4f}")
+
+print("\n=== 最优策略 (Optimal Policy) ===")
+for s in range(NUM_STATES):
+    best_action = ACTIONS[optimal_policy[s]]
+    print(f"在状态 {STATES[s]}, 机器人应该采取动作: {best_action}")
