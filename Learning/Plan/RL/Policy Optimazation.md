@@ -395,3 +395,5 @@ print("\n=== 最优策略 (Optimal Policy) ===")
 for s in range(NUM_STATES):
     best_action = ACTIONS[optimal_policy[s]]
     print(f"在状态 {STATES[s]}, 机器人应该采取动作: {best_action}")
+```
+
