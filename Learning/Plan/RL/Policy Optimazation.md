@@ -519,4 +519,95 @@ Q-Learning是Off-policy算法
 
 **折扣因子**：因为这个任务是个有限任务，不会出现奖励是无穷地情况。我们简单地设置折扣因子为1。
 
-![[Pasted image 20261023103113.png]]
+![[Pasted image 20261023103113.png]]```
+
+```python
+import gymnasium as gym
+# 1. 创建悬崖漫步环境
+env = gym.make('CliffWalking-v1')
+# 2. 初始化环境，获取初始状态
+state, info = env.reset()
+done = False
+total_reward = 0
+print(f"初始状态: {state}")
+# 3. 开始交互循环
+while not done:
+    # 随机采样一个动作（在悬崖漫步中是 0, 1, 2, 3 代表上下左右）
+    action = env.action_space.sample()
+    # 与环境交互
+    next_state, reward, terminated, truncated, info = env.step(action)
+    # 只要自然终止或被截断，回合就结束
+    done = terminated or truncated
+    total_reward += reward
+    # 状态更新
+    state = next_state
+print(f"回合结束！ 随机瞎逛的总奖励为: {total_reward}")
+# 4. 释放环境资源
+env.close()
+
+
+**$\epsilon - Greedy$ 策略定义**
+```python
+# ==========================================
+# 2. 策略定义 (Epsilon-Greedy)
+# ==========================================
+def epsilon_greedy(state, q_table, epsilon=EPSILON):
+    if np.random.rand() < epsilon:
+        return np.random.choice(4)  # 随机探索
+    else:
+        return np.argmax(q_table[state])  # 利用已知最优动作
+        
+
+# 创建 Q table。用 0 初始化。形状为: 状态数 x 动作数
+q_table = np.zeros((env.observation_space.n, env.action_space.n))
+
+
+# 创建环境并互动
+env = gym.make('CliffWalking-v1')
+state, _ = env.reset()
+action = epsilon_greedy(state, q_table)
+next_state, reward, terminated, truncated, _ = env.step(action)
+```
+### 代码实现
+
+**SARSA 更新 (On-policy)**
+$$
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha[r_{t+1} + \gamma Q(s_{t+1}, a_{t+1}) - Q(s_t, a_t)]
+$$
+
+**Q-Learning 更新 (Off-policy)**
+$$
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_{t+1} + \gamma \max_a Q(s_{t+1}, a) - Q(s_t, a_t) \right]
+$$
+
+**完整代码逻辑：**
+```python
+while not done:
+    next_state, reward, terminated, truncated, _ = env.step(action)
+    done = terminated or truncated
+    total_reward += reward
+
+    # SARSA 更新 (On-policy)
+    if algo == 'sarsa':
+        next_action = epsilon_greedy(next_state, q_table)
+        td_target = reward + GAMMA * q_table[next_state][next_action] * (not done)
+        q_table[state][action] += ALPHA * (td_target - q_table[state][action])
+        action = next_action
+
+    # Q-Learning 更新 (Off-policy)
+    elif algo == 'q_learning':
+        best_next_action = np.argmax(q_table[next_state])
+        td_target = reward + GAMMA * q_table[next_state][best_next_action] * (not done)
+        q_table[state][action] += ALPHA * (td_target - q_table[state][action])
+        action = epsilon_greedy(next_state, q_table)
+
+    state = next_state
+```
+
+SARSA 学到的安全路线 (On-policy)                   Q-Learning 学到的最佳路线 (Off-policy)
+- - - - - - - - - - - - - - -                     - - - - - - - - - - - - - - -
+. . . . . . . . . . . . . .                       . . . . . . . . . . . . . .
+* * * * * * * * * * * * * *                       . . . . . . . . . . . . . .
+* . . . . . . . . . . . . *                       * * * * * * * * * * * * * *
+S C C C C C C C C C C C C G                       S C C C C C C C C C C C C G
+- - - - - - - - - - - - - - -                     - - - - - - - - - - - - - - -
