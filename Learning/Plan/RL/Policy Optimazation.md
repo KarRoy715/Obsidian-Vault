@@ -649,4 +649,30 @@ DQN，学习最优动作价值，然后根据最优动作价值间接得到策�
 ### 4.2.1 策略网络如何训练
 ![[Pasted image 20261026102301.png]]
 ### 4.2.2 策略期望回报最大
-比方：网游戏，利用策略网络
+比方：网游戏，利用策略网络的策略来玩超级玛丽，每玩一局都会得到轨迹$\tau$，$\tau=(s_0,a_0,r_1,s_1.a_1,...,s_t)$，这条策略的总回报是：$$
+G(\tau) = \sum_{t=1}^{T} \gamma^{t-1} r_t
+$$$\gamma$：折扣因子
+因为目标不是某一局的回报最大，而是总体平均期望最大，所以目标就是最大化这个期望：$$
+J(\theta) = E_{\tau \sim p_\theta(\tau)}[G(\tau)]
+$$
+对于具体的轨迹$\tau$，它的回报$G(\tau)$，这是由环境决定的。我们可以改变的是策略，也就是通过改变神经网络的参数$\theta$，让高回报的轨迹出现的概率高一些，让低回报的轨迹出现的概率低一些，这样就可以让回报的期望$J(\theta)$变大
+
+数学实现：
+$$
+\nabla_\theta J(\theta)
+$$
+我们可以让目标函数$J(\theta)$对$\theta$求梯度$\nabla_\theta J(\theta)$，$\theta$沿梯度方向进行改变是$J(\theta)$增长最快的方向。利用梯度上升，我们就可以让$J(\theta)$变大
+$$
+\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta)
+$$
+**求解策略梯度**
+$$
+J(\theta) = E_{\tau \sim p_\theta(\tau)}[G(\tau)]
+$$
+$$
+\begin{aligned}
+\nabla_\theta J(\theta) &= \nabla_\theta \sum_{\tau} p_\theta(\tau)G(\tau) \\
+&= \sum_{\tau} \nabla_\theta p_\theta(\tau)G(\tau)
+\end{aligned}
+$$
+把期望展开成轨迹概率与轨迹累计折扣回报的乘积，再把求导符号移入累加符号内
