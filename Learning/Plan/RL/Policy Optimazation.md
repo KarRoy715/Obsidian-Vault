@@ -689,8 +689,46 @@ $$
 \begin{aligned}
 \nabla_\theta J(\theta) &= \nabla_\theta \sum_{\tau} p_\theta(\tau)G(\tau) \\
 &= \sum_{\tau} \nabla_\theta p_\theta(\tau)G(\tau) \\
-&= \sum_{\tau} \color{red}{p_\theta(\tau)} \frac{\color{blue}{\nabla_\theta p_\theta(\tau)}}{\color{blue}{p_\theta(\tau)} G(\tau)} \\
+&= \sum_{\tau} {\color{red}{p_\theta(\tau)}} \frac{\color{blue}{\nabla_\theta p_\theta(\tau)}}{\color{blue}{p_\theta(\tau)}} {\color{blue}{G(\tau)}} \\
 &= E_{\tau \sim p_\theta(\tau)} \left[ \frac{\color{blue}{\nabla_\theta p_\theta(\tau)}}{\color{blue}{p_\theta(\tau)}} G(\tau) \right]
 \end{aligned}
 $$
-$\color{red}{p_\theta(\tau)}$是概率
+通过同时×和÷$\color{red}{p_\theta(\tau)}$，得到期望的表达形式。$\color{red}{p_\theta(\tau)}$是概率$\frac{\color{blue}{\nabla_\theta p_\theta(\tau)}}{\color{blue}{p_\theta(\tau)}} {\color{blue}{G(\tau)}}$是统计值。就可以把第三行公式的累加形式写成期望的形式，再根据对数函数求导法则
+$$
+\nabla_x \log f(x) = \frac{\nabla_x f(x)}{f(x)}
+$$
+一个函数的梯度除以函数本身，等于对函数先取对数，再求梯度
+$$ \begin{aligned} &= E_{\tau \sim p_\theta(\tau)} \left[ \frac{\nabla_\theta p_\theta(\tau)}{p_\theta(\tau)} G(\tau) \right] \\ &= E_{\tau \sim p_\theta(\tau)} [\nabla_\theta \log p_\theta(\tau) G(\tau)] \end{aligned} $$ | **蒙特卡洛法：**<br>利用 $\pi_\theta$ 采样多个轨迹，求 $\nabla_\theta \log p_\theta(\tau) G(\tau)$ 的平均值，就得到 $\nabla_\theta J(\theta)$
+$$ \theta \leftarrow \theta + \alpha \nabla_\theta J(\theta) $$
+
+$$
+\boxed{\nabla_\theta J(\theta) = E_{\tau \sim p_\theta(\tau)}[\nabla_\theta \log p_\theta(\tau)G(\tau)]}
+$$
+$$
+p_\theta(\tau) = p(s_0) \prod_{t=0}^{T} [\pi_\theta(a_t|s_t)p(s_{t+1}|s_t, a_t)]
+$$
+$p_\theta(\tau)$计算的是一条轨迹出现的概率，$p(s_0)$ 是轨迹初始状态概率，后面是每一步状态的概率的连乘。每一步状态转移的概率都是由两步构成的，首先是策略选择动作的概率$\pi_\theta(a_t|s_t)$ （这个是神经网络的输出，这个我们可以知道），下一步是状态转移概率$p(s_{t+1}|s_t, a_t)$。剩下的我们因为没有环境模型，就没有办法知道了
+$$
+p_\theta(\tau) = p(s_0) \prod_{t=0}^{T} [\pi_\theta(a_t|s_t)p(s_{t+1}|s_t, a_t)]
+$$
+两边同时取对数，再把右边的对数展开
+$$
+\begin{aligned}
+\log p_\theta(\tau) &= \log \left[ p(s_0) \prod_{t=0}^{T} [\pi_\theta(a_t|s_t)p(s_{t+1}|s_t, a_t)] \right] \\
+&= \log p(s_0) + \sum_{t=0}^{T} \log \pi_\theta(a_t|s_t) + \sum_{t=0}^{T} \log p(s_{t+1}|s_t, a_t)
+\end{aligned}
+$$
+第一项和第三项是没有θ的，所以求导后为0
+$$
+\nabla_\theta \log p_\theta(\tau) = \sum_{t=0}^{T} \nabla_\theta \log \pi_\theta(a_t|s_t)
+$$
+再把该结果带入之前的期望公式
+$$
+\boxed{
+\begin{aligned}
+\nabla_\theta J(\theta) &= E_{\tau \sim p_\theta(\tau)} \left[ \left( \sum_{t=0}^{T} \nabla_\theta \log \pi_\theta(a_t|s_t) \right) G(\tau) \right] \\
+&\approx \frac{1}{N} \sum_{n} \left[ \left( \sum_{t=0}^{T} \nabla_\theta \log \pi_\theta(a_t^n|s_t^n) \right) G(\tau^n) \right]
+\end{aligned}
+}
+$$
+### 4.2.3 策略梯度的直观理解
