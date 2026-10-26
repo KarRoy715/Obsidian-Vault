@@ -732,3 +732,12 @@ $$
 }
 $$
 ### 4.2.3 策略梯度的直观理解
+$$
+\nabla_\theta J(\theta) = E_{\tau \sim p_\theta(\tau)} \left[ \left( \sum_{t=0}^{T} \nabla_\theta \log \pi_\theta(a_t|s_t) \right) G(\tau) \right]
+$$
+$$
+\nabla_\theta J(\theta) = E_{\tau \sim p_\theta(\tau)} \left[ \sum_{t=0}^{T} [\color{blue}{\nabla_\theta \log \pi_\theta(a_t|s_t) G(\tau)}] \right]
+$$
+
+* 如果一条轨迹的总回报 $G(\tau)$ 是一个正数，那么梯度方向就是增加这个轨迹里所有动作出现的概率。回报越大，提升幅度越大。
+* 如果一条轨迹的总回报 $G(\tau)$ 是一个负数，那么梯度方向就是减少这个轨迹里所有动作出现的概率。回报越小，降低幅度越大。
