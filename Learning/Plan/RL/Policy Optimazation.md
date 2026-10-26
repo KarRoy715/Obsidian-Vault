@@ -675,4 +675,22 @@ $$
 &= \sum_{\tau} \nabla_\theta p_\theta(\tau)G(\tau)
 \end{aligned}
 $$
-把期望展开成轨迹概率与轨迹累计折扣回报的乘积，再把求导符号移入累加符号内
+把期望展开成轨迹概率与轨迹累计折扣回报的乘积，再把求导符号移入累加符号内，其中θ之和前两项有关，最后一项可以看成是常数。
+因为上面是累加，所以要找出所有可能的轨迹τ再累加，这是不现实的。
+
+**蒙特卡洛方法：**
+当我们无法直接计算一个随机变量的期望时，可以通过大量随机采样，使用这些样本结果的平均值来近似真实期望。
+**餐厅每人消费金额的期望值：**
+
+|                      期望公式计算                       |          蒙特卡洛近似          |
+| :-----------------------------------------------: | :----------------------: |
+| $\sum_{\text{不同金额}} (\text{金额} \times \text{概率})$ | 客户里采样一批数据，<br>计算他们消费的平均值 |
+$$
+\begin{aligned}
+\nabla_\theta J(\theta) &= \nabla_\theta \sum_{\tau} p_\theta(\tau)G(\tau) \\
+&= \sum_{\tau} \nabla_\theta p_\theta(\tau)G(\tau) \\
+&= \sum_{\tau} \color{red}{p_\theta(\tau)} \frac{\color{blue}{\nabla_\theta p_\theta(\tau)}}{\color{blue}{p_\theta(\tau)} G(\tau)} \\
+&= E_{\tau \sim p_\theta(\tau)} \left[ \frac{\color{blue}{\nabla_\theta p_\theta(\tau)}}{\color{blue}{p_\theta(\tau)}} G(\tau) \right]
+\end{aligned}
+$$
+$\color{red}{p_\theta(\tau)}$是概率
