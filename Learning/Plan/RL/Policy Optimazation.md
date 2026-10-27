@@ -457,6 +457,8 @@ $$
 $$
 V_\pi(s_t) \leftarrow V_\pi(s_t) + \alpha\underbrace{[\underbrace{r_{t+1} + \gamma V_\pi(s_{t+1})}_{\text{TD Target}} - V_\pi(s_t)]}_{\text{TD Error}}
 $$
+TD Target是由，$r_{t+1}$走了一步之后的真实奖励，下一步状态价值的折扣估计$\gamma V_\pi(s_{t+1})$组成。$V_\pi(s_t)]$原来预测的状态价值
+
 时序差分结合了动态规划和蒙特卡洛的优点：
 像蒙特卡洛法一样不需要知道环境模型。
 像动态规划一样每走一步就更新一次。
@@ -466,6 +468,7 @@ $(S_t, A_t, R_t, S_{t+1}, A_{t+1})$ : SARSA
 $$
 Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha\underbrace{[\underbrace{r_{t+1} + \gamma Q(s_{t+1}, a_{t+1})}_{\text{TD Target}} - Q(s_t, a_t)]}_{\text{TD Error}}
 $$
+
 $\epsilon - Greedy$ 策略：
 $$
 \begin{cases}
