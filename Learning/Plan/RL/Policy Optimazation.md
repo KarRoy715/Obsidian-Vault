@@ -553,7 +553,7 @@ env.close()
 # ==========================================
 # 2. 策略定义 (Epsilon-Greedy)
 # ==========================================
-def epsilon_greedy(state, q_table, epsilon=EPSILON):
+def epsilon_greedy(state, q_tabl12e, epsilon=EPSILON):
     if np.random.rand() < epsilon:
         return np.random.choice(4)  # 随机探索
     else:
@@ -608,7 +608,7 @@ while not done:
 ![[Pasted image 20261023113051.png]]
 
 ---
-## 3.1 DQN原理及核心机制
+## 3.1 DQN原理及核心机制（DQN：Deep Q Network)
 ### 3.1.1 表格型方法的问题
 ![[Pasted image 20261023113246.png]]
 	表格型方法是没有泛化能力的，每个表格之间是相互独立的。
@@ -629,6 +629,7 @@ while not done:
 $$
 e_t = (s_t, a_t, r_{t+1}, s_{t+1}, done_{t+1})
 $$
+$done_{t+1})$表示是否结束
 
 ## 3.2 DQN进阶
 
