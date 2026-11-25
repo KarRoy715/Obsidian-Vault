@@ -10,4 +10,4 @@ agent distilation
 前景：形式化验证来替代商业软件的功能
 
 
-![[Pasted image 20261125115512.png]]
+![[Pasted image 20261125115512.png]]![[Pasted image 20261125120222.png]]
